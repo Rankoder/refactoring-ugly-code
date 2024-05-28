@@ -18,6 +18,7 @@ class CommissionService
 {
     private BinListProviderInterface $binListProvider;
     private ExchangeRateProviderInterface $exchangeRateProvider;
+    private string $baseCurrency;
 
     /**
      * CommissionService constructor.
@@ -31,6 +32,7 @@ class CommissionService
     ) {
         $this->binListProvider = $binListProvider;
         $this->exchangeRateProvider = $exchangeRateProvider;
+        $this->baseCurrency = $this->loadBaseCurrency();
     }
 
     /**
@@ -86,10 +88,21 @@ class CommissionService
      */
     private function convertToEur(Transaction $transaction, string $exchangeRate): Money
     {
-        if ($transaction->getCurrency() === 'EUR') {
+        if ($transaction->getCurrency() === $this->baseCurrency) {
             return $transaction->getAmount();
         }
 
         return $transaction->getAmount()->divide($exchangeRate);
+    }
+
+    /**
+     * Loads the base currency from the configuration file.
+     *
+     * @return string The base currency.
+     */
+    private function loadBaseCurrency(): string
+    {
+        $config = include __DIR__ . '/../../../src/config/currency.php';
+        return $config['BASE_CURRENCY'] ?? 'EUR';
     }
 }

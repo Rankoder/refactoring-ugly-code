@@ -4,6 +4,7 @@ namespace App\Infrastructure;
 
 use App\Domain\Repository\BinListProviderInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 
@@ -49,6 +50,10 @@ class BinListProvider implements BinListProviderInterface
             if ($e->getResponse()->getStatusCode() == 429) {
                 throw new InvalidArgumentException('Rate limit exceeded. Please try again later.');
             }
+            throw new InvalidArgumentException('Failed to fetch country code: ' . $e->getMessage());
+        } catch (RequestException $e) {
+            throw new InvalidArgumentException('Failed to fetch country code: ' . $e->getMessage());
+        } catch (GuzzleException $e) {
             throw new InvalidArgumentException('Failed to fetch country code: ' . $e->getMessage());
         }
     }

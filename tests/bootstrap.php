@@ -1,6 +1,6 @@
 <?php
 
-class bootstrap
-{
+require __DIR__ . '/../vendor/autoload.php';
 
-}
+
+

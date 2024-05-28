@@ -2,7 +2,7 @@
 
 namespace App\Domain\Repository;
 
-interface ExchangeRateProvider
+interface ExchangeRateProviderInterface
 {
-    public function getRate(string $currency): float;
+    public function getRate(string $currency): string;
 }
